@@ -1,18 +1,23 @@
+
 import express from "express";
 import routes from "./routes.js";
-// TODO: complete me (loading the necessary packages)
-
 import dotenv from "dotenv";
-dotenv.config();
-import cors from 'cors';
+import cors from "cors";
 
+dotenv.config();
 
 const app = express();
+
+// Load frontend URL from environment variable or use default
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
-// TODO: complete me (CORS)
-app.use(cors({origin: FRONTEND_URL,}));
+// Enable CORS for the specified frontend origin
+app.use(cors({ origin: FRONTEND_URL }));
+
+// Parse JSON request bodies
 app.use(express.json());
-app.use('', routes);
+
+// Mount routes at root
+app.use("/", routes);
 
 export default app;
