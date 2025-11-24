@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     
     
     
+    
     const login = async (username, password) => {
     try {
         const res = await fetch(`${BACKEND_URL}/login`, {
@@ -84,8 +85,11 @@ export const AuthProvider = ({ children }) => {
         }
 
         const data = await res.json();
-        localStorage.setItem('token', data.token);
+        if (!data.token) {
+        return "Invalid credentials";
+        }
 
+        localStorage.setItem('token', data.token);
         const userRes = await fetch(`${BACKEND_URL}/user/me`, {
         headers: { Authorization: `Bearer ${data.token}` }
         });
@@ -97,6 +101,7 @@ export const AuthProvider = ({ children }) => {
         return "Network error. Please try again.";
     }
     };
+
 
 
 
