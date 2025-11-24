@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
      */
     
     
+    
     const login = async (username, password) => {
     try {
         const res = await fetch(`${BACKEND_URL}/login`, {
@@ -69,8 +70,16 @@ export const AuthProvider = ({ children }) => {
         });
 
         if (!res.ok) {
-        const error = await res.json();
-        return error.message || "Invalid credentials"; // Fallback message
+        let errorMessage = "Invalid credentials"; // Default fallback
+        try {
+            const error = await res.json();
+            if (error.message) {
+            errorMessage = error.message;
+            }
+        } catch {
+            // If response is not JSON, keep fallback
+        }
+        return errorMessage;
         }
 
         const data = await res.json();
@@ -82,11 +91,12 @@ export const AuthProvider = ({ children }) => {
         const userData = await userRes.json();
         setUser(userData.user);
         navigate('/profile');
-        return "success"; // Optional: return success status
-    } catch (err) {
+        return "success";
+    } catch {
         return "Network error. Please try again.";
     }
     };
+
 
 
 
