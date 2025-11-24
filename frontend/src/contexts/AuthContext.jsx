@@ -59,25 +59,35 @@ export const AuthProvider = ({ children }) => {
      * @returns {string} - Upon failure, Returns an error message.
      */
     
+    
     const login = async (username, password) => {
-    const res = await fetch(`${BACKEND_URL}/login`, {
+    try {
+        const res = await fetch(`${BACKEND_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
-    });
-    if (!res.ok) {
+        });
+
+        if (!res.ok) {
         const error = await res.json();
-        return error.message;
-    }
-    const data = await res.json();
-    localStorage.setItem('token', data.token);
-    const userRes = await fetch(`${BACKEND_URL}/user/me`, {
+        return error.message || "Invalid credentials"; // Fallback message
+        }
+
+        const data = await res.json();
+        localStorage.setItem('token', data.token);
+
+        const userRes = await fetch(`${BACKEND_URL}/user/me`, {
         headers: { Authorization: `Bearer ${data.token}` }
-    });
-    const userData = await userRes.json();
-    setUser(userData.user);
-    navigate('/profile');
+        });
+        const userData = await userRes.json();
+        setUser(userData.user);
+        navigate('/profile');
+        return "success"; // Optional: return success status
+    } catch (err) {
+        return "Network error. Please try again.";
+    }
     };
+
 
 
     /**
