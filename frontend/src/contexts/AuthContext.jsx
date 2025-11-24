@@ -61,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     
     
     
+    
     const login = async (username, password) => {
     try {
         const res = await fetch(`${BACKEND_URL}/login`, {
@@ -73,11 +74,11 @@ export const AuthProvider = ({ children }) => {
         let errorMessage = "Invalid credentials"; // Default fallback
         try {
             const error = await res.json();
-            if (error.message) {
+            if (error && error.message) {
             errorMessage = error.message;
             }
         } catch {
-            // If response is not JSON, keep fallback
+            // If response isn't JSON, keep fallback
         }
         return errorMessage;
         }
@@ -96,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         return "Network error. Please try again.";
     }
     };
+
 
 
 
